@@ -28,15 +28,15 @@ public class DistanceService {
 
 	@Autowired
 	private TransitDAO dao;
-	
-	@Value( "${mapquestapi.key}" )
+
+	@Value("${mapquestapi.key}")
 	private String key;
 
 	@Async
 	public void getDistance(Long id) throws InterruptedException, JSONException {
 
-		logger.info(String.format("Processing request with id %d",id));
-		
+		logger.info(String.format("Processing request with id %d", id));
+
 		Optional<TransitModel> transitmodel = dao.findById(id);
 
 		RestTemplate restTemplate = new RestTemplate();
@@ -46,19 +46,19 @@ public class DistanceService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
-		
+
 		ResponseEntity<String> distanceResponse = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
 		JSONObject distanceJson;
 		distanceJson = new JSONObject(distanceResponse.getBody());
-		BigDecimal distance = BigDecimal.valueOf(distanceJson.getJSONArray("distance")
-				.getDouble(distanceJson.getJSONArray("distance").length() - 1));
+		BigDecimal distance = BigDecimal.valueOf(
+				distanceJson.getJSONArray("distance").getDouble(distanceJson.getJSONArray("distance").length() - 1));
 		distance = distance.multiply(new BigDecimal(1.609));
-		
+
 		transitmodel.get().setDistance(distance);
-		
-		logger.info(String.format("Finished processing request with id %d",id));
-		
+
+		logger.info(String.format("Finished processing request with id %d", id));
+
 		dao.save(transitmodel.get());
 	}
 }

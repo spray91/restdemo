@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "transit")
@@ -17,19 +18,22 @@ public class TransitModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
+	@NotBlank
 	private String source;
 
+	@NotBlank
 	private String destination;
 
 	private Integer price;
 
-	@Column(scale=2)
+	@Column(scale = 2)
 	private BigDecimal distance;
-	
+
 	private LocalDate date;
-	
-	protected TransitModel() {}
+
+	protected TransitModel() {
+	}
 
 	public TransitModel(String source, String destination, Integer price, LocalDate date) {
 		this.source = source;
@@ -37,11 +41,11 @@ public class TransitModel {
 		this.price = price;
 		this.date = date;
 	}
-	
+
 	@Override
-    public String toString() {
-    	return String.format("ID: %n", id);
-    }
+	public String toString() {
+		return String.format("ID: %n", id);
+	}
 
 	public Long getId() {
 		return id;
