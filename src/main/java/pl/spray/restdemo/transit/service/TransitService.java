@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class TransitService {
 		return dao.save(transit);
 	}	
 	
-	public JSONObject getDailyRaport(LocalDate startDate, LocalDate endDate){
+	public JSONObject getDailyRaport(LocalDate startDate, LocalDate endDate) throws JSONException{
 		
 		List<TransitModel> transits = dao.findAllByDateBetween(startDate, endDate);
 		int price = 0;

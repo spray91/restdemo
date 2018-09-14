@@ -49,8 +49,7 @@ public class DistanceService {
 
 		ResponseEntity<String> distanceResponse = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
-		JSONObject distanceJson;
-		distanceJson = new JSONObject(distanceResponse.getBody());
+		JSONObject distanceJson = new JSONObject(distanceResponse.getBody());
 		BigDecimal distance = BigDecimal.valueOf(
 				distanceJson.getJSONArray("distance").getDouble(distanceJson.getJSONArray("distance").length() - 1));
 		distance = distance.multiply(new BigDecimal(1.609));
