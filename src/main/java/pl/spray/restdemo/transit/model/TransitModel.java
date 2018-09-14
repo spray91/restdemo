@@ -44,7 +44,7 @@ public class TransitModel {
 
 	@Override
 	public String toString() {
-		return String.format("ID: %n", id);
+		return String.format("ID: %d", id);
 	}
 
 	public Long getId() {

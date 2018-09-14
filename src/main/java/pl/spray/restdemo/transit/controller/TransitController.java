@@ -1,15 +1,20 @@
 package pl.spray.restdemo.transit.controller;
 
+import java.time.LocalDate;
+
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.spray.restdemo.transit.dao.TransitDAO;
 import pl.spray.restdemo.transit.model.TransitModel;
 import pl.spray.restdemo.transit.service.DistanceService;
 import pl.spray.restdemo.transit.service.TransitService;
@@ -24,6 +29,9 @@ public class TransitController {
 
 	@Autowired
 	DistanceService ds;
+
+	@Autowired
+	TransitDAO dao;
 
 	@PostMapping(value = "/transits")
 	public ResponseEntity<?> addTransit(@RequestBody TransitModel transitmodel)
@@ -40,5 +48,13 @@ public class TransitController {
 		}
 		ds.getDistance(transitmodel.getId());
 		return ResponseEntity.created(null).body(response);
+	}
+
+	@GetMapping(value = "/reports/daily", produces = "application/json")
+	public ResponseEntity<?> getDailyReport(@RequestParam(value = "start_date", required = true) String startDate,
+			@RequestParam("end_date") String endDate) {
+
+		return ResponseEntity.ok()
+				.body(ts.getDailyRaport(LocalDate.parse(startDate), LocalDate.parse(endDate)).toString());
 	}
 }
