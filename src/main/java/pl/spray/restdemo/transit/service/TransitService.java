@@ -1,9 +1,25 @@
 package pl.spray.restdemo.transit.service;
 
+import java.time.LocalDate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+
+import pl.spray.restdemo.transit.dao.TransitDAO;
 import pl.spray.restdemo.transit.model.TransitModel;
 
-public interface TransitService {
+@Service("TransitService")
+public class TransitService {
 	
-	TransitModel addTransit(TransitModel transitmodel);
-
+	@Autowired
+	TransitDAO dao;
+	
+	public TransitModel addTransit(TransitModel transit) throws TransactionSystemException{
+		
+		if(transit.getDate() == null) {
+			transit.setDate(LocalDate.now());
+		}
+		return dao.save(transit);
+	}	
 }
