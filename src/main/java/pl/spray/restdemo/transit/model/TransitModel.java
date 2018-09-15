@@ -25,17 +25,20 @@ public class TransitModel {
 	@NotBlank
 	private String destination;
 
-	private Integer price;
+	@Column(scale = 2)
+	private BigDecimal price;
 
 	@Column(scale = 2)
 	private BigDecimal distance;
 
 	private LocalDate date;
+	
+	private String errorMssage;
 
 	protected TransitModel() {
 	}
 
-	public TransitModel(String source, String destination, Integer price, LocalDate date) {
+	public TransitModel(String source, String destination, BigDecimal price, LocalDate date) {
 		this.source = source;
 		this.destination = destination;
 		this.price = price;
@@ -55,11 +58,11 @@ public class TransitModel {
 		this.id = id;
 	}
 
-	public Integer getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
@@ -93,5 +96,13 @@ public class TransitModel {
 
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+
+	public String getErrorMssage() {
+		return errorMssage;
+	}
+
+	public void setErrorMssage(String errorMssage) {
+		this.errorMssage = errorMssage;
 	}
 }

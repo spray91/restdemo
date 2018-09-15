@@ -37,10 +37,10 @@ public class TransitController {
 			throws JSONException, InterruptedException {
 
 		logger.info("Received request");
-		
+
 		TransitModel response = ts.addTransit(transitmodel);
 		ds.getDistance(transitmodel.getId());
-		
+
 		return ResponseEntity.created(null).header("Content-Type", "application/json").body(response);
 	}
 
@@ -48,7 +48,19 @@ public class TransitController {
 	public ResponseEntity<?> getDailyReport(@RequestParam(value = "start_date", required = true) String startDate,
 			@RequestParam("end_date") String endDate) throws JSONException {
 
-		return ResponseEntity.ok().header("Content-Type", "application/json")
+		return ResponseEntity.ok()
 				.body(ts.getDailyRaport(LocalDate.parse(startDate), LocalDate.parse(endDate)).toString());
+	}
+
+	@GetMapping(value = "/reports/currentmonth", produces = "application/json")
+	public ResponseEntity<?> getCurrentMonthReport() throws JSONException {
+
+		return ResponseEntity.ok().body(ts.getCurrentMonthReport().toString());
+	}
+
+	@GetMapping(value = "/reports/lastmonth", produces = "application/json")
+	public ResponseEntity<?> getLastMonthReport() throws JSONException {
+
+		return ResponseEntity.ok().body(ts.getLastMonthReport().toString());
 	}
 }
