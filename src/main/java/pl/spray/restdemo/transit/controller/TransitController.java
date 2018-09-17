@@ -55,12 +55,18 @@ public class TransitController {
 	@GetMapping(value = "/reports/currentmonth", produces = "application/json")
 	public ResponseEntity<?> getCurrentMonthReport() throws JSONException {
 
-		return ResponseEntity.ok().body(ts.getCurrentMonthReport().toString());
+		LocalDate firstDayOfMonth = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1);
+
+		return ResponseEntity.ok()
+				.body(ts.getMonthlyReport(firstDayOfMonth, LocalDate.now().getDayOfMonth()).toString());
 	}
 
 	@GetMapping(value = "/reports/lastmonth", produces = "application/json")
 	public ResponseEntity<?> getLastMonthReport() throws JSONException {
 
-		return ResponseEntity.ok().body(ts.getLastMonthReport().toString());
+		LocalDate firstDayOfLastMonth = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1).minusMonths(1);
+		int days = LocalDate.now().minusMonths(1).getMonth().length(LocalDate.now().isLeapYear());
+
+		return ResponseEntity.ok().body(ts.getMonthlyReport(firstDayOfLastMonth, days).toString());
 	}
 }

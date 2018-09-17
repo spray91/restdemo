@@ -32,7 +32,7 @@ public class TransitModel {
 	private BigDecimal distance;
 
 	private LocalDate date;
-	
+
 	private String errorMssage;
 
 	protected TransitModel() {
