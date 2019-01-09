@@ -1,49 +1,80 @@
 package pl.spray.restdemo.transit.service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.client.RestTemplate;
 import pl.spray.restdemo.transit.dao.TransitDAO;
 import pl.spray.restdemo.transit.model.TransitModel;
-import pl.spray.restdemo.transit.utilities.TransitUtilities;
 
 @Service
+@Slf4j
 public class DistanceService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DistanceService.class);
+	@Value("${mapquestapi.key}")
+	private String key;
+
+	private final static String MAPQUEST_URL = "http://www.mapquestapi.com/directions/v2/routematrix?key=%s";
 
 	@Autowired
 	private TransitDAO dao;
 
-	@Autowired
-	TransitUtilities utilities;
-
 	@Async
-	public void getDistance(Long id) throws InterruptedException, JSONException {
+	public void getDistance(TransitModel transitModel) throws JSONException {
 
-		logger.info(String.format("Processing request with id %d", id));
+		log.info(String.format("Processing request with id %d", transitModel.getId()));
 
-		Optional<TransitModel> transitmodel = dao.findById(id);
-
-		BigDecimal distance = utilities.getDistance(transitmodel.get().getSource(),
-				transitmodel.get().getDestination());
+		BigDecimal distance = getDistanceFromExternalApi(transitModel.getSource(), transitModel.getDestination());
 
 		if (distance.compareTo(BigDecimal.ZERO) < 0) {
-			transitmodel.get().setErrorMssage("WWe are not able to determine the distance between the locations");
-			logger.info(String.format("Request with id %d was finished with errors", id));
+			transitModel.setErrorMessage("We are not able to determine the distance between the locations.");
+			log.info(String.format("Request with id %d was finished with errors", transitModel.getId()));
 		} else {
 			distance = distance.multiply(new BigDecimal(1.609));
-			transitmodel.get().setDistance(distance);
-			logger.info(String.format("Request with id %d was finished without errors", id));
+			transitModel.setDistance(distance);
+			log.info(String.format("Request with id %d was finished without errors", transitModel.getId()));
 		}
+		dao.save(transitModel);
+	}
 
-		dao.save(transitmodel.get());
+	private BigDecimal getDistanceFromExternalApi(String source, String destination) throws JSONException {
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = String.format(MAPQUEST_URL, key);
+		HttpEntity<String> entity = prepareHttpEntity(source, destination);
+
+		ResponseEntity<String> distanceResponse = restTemplate.postForEntity(url, entity, String.class);
+
+		return getDistanceFromJson(distanceResponse.getBody());
+	}
+
+	private HttpEntity<String> prepareHttpEntity(String source, String destination){
+
+		String payload = String.format("{\"locations\": [\"%s\" , \"%s\"]}", source, destination);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		return new HttpEntity<>(payload, headers);
+	}
+
+	private BigDecimal getDistanceFromJson(String payload){
+		JSONObject distanceJson = new JSONObject(payload);
+		try {
+			return BigDecimal.valueOf(distanceJson.getJSONArray("distance")
+					.getDouble(distanceJson.getJSONArray("distance").length() - 1));
+		} catch (JSONException ex) {
+			return new BigDecimal(-1);
+		}
 	}
 }
