@@ -19,7 +19,7 @@ import pl.spray.restdemo.transit.service.TransitService;
 @RestController
 public class TransitController {
 
-	//TODO: modify get methods to use body instead of param
+	//TODO: modify get methods to use body instead of param and looks like addTransit (service produce response)
 
 	@Autowired
 	TransitService transitService;

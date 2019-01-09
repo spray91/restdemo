@@ -22,6 +22,9 @@ import pl.spray.restdemo.transit.model.TransitModel;
 @Slf4j
 public class DistanceService {
 
+    //TODO: improve getDistanceFromExternalApi (error handling, bad parameters etc? )
+	//TODO: should it be splitted? (async and sync mehtod in one class)
+
 	@Value("${mapquestapi.key}")
 	private String key;
 

@@ -20,6 +20,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class TransitModel {
 
+	//TODO: consider creation of new model just to get src and dst from REST
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
