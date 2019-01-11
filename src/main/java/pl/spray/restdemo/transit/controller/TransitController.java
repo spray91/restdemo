@@ -1,7 +1,5 @@
 package pl.spray.restdemo.transit.controller;
 
-import java.time.LocalDate;
-
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class TransitController {
 	}
 
 	@PostMapping(value = "/add_transit")
-	public ResponseEntity addTransit(@RequestBody Transit transit) throws InterruptedException {
+	public ResponseEntity addTransit(@RequestBody Transit transit) {
 		log.info(transit.toString());
 		return transitService.addTransit(transit);
 	}
