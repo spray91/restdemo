@@ -31,8 +31,6 @@ public class ReportingService {
         this.dao = dao;
     }
 
-
-
     public ResponseEntity getDailyReport(DailyReport reportRequest) throws JSONException {
         List<Transit> transits = dao.findAllByDateBetween(reportRequest.getStartDate(), reportRequest.getEndDate());
 
