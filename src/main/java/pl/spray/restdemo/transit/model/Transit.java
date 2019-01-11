@@ -12,15 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data
 @Table(name = "transit")
 @NoArgsConstructor
-public class TransitModel {
-
-	//TODO: consider creation of new model just to get src and dst from REST
+public class Transit {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +32,7 @@ public class TransitModel {
 	private String destination;
 
 	@Column(scale = 2)
+	@Min(value = 0)
 	private BigDecimal price;
 
 	@Column(scale = 2)
@@ -41,9 +41,4 @@ public class TransitModel {
 	private LocalDate date;
 
 	private String errorMessage;
-
-	@Override
-	public String toString() {
-		return String.format("ID: %d", id);
-	}
 }
