@@ -24,7 +24,6 @@ import java.util.Map;
 public class ReportingService {
 
     private final static String ERRORS = "errors";
-
     private TransitDAO dao;
 
     @Autowired

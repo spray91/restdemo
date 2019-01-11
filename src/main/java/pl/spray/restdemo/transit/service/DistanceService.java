@@ -26,9 +26,7 @@ public class DistanceService {
 
 	@Value("${mapquestapi.key}")
 	private String key;
-
 	private final static String MAPQUEST_URL = "http://www.mapquestapi.com/directions/v2/routematrix?key=%s";
-
 	private TransitDAO dao;
 
 	@Autowired
