@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TransitControllerAdvice {
 
-	//TODO: clean
-
 	@ExceptionHandler(DateTimeParseException.class)
 	public ResponseEntity<String> handleDateTimeParseException(DateTimeParseException ex) throws JSONException {
 
@@ -27,7 +25,7 @@ public class TransitControllerAdvice {
 	public ResponseEntity<String> handleTransactionSystemException(TransactionSystemException ex) throws JSONException {
 
 		JSONObject responseJson = new JSONObject();
-		responseJson.put("message", "Source, destination and cost cannot be empty");
+		responseJson.put("message", "Source, destination and price cannot be empty or negative");
 		return ResponseEntity.badRequest().header("Content-Type", "application/json").body(responseJson.toString());
 
 	}

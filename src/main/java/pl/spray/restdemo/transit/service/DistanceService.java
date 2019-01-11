@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,7 @@ public class DistanceService {
 
 	private TransitDAO dao;
 
+	@Autowired
 	public DistanceService(TransitDAO dao){
 		this.dao = dao;
 	}

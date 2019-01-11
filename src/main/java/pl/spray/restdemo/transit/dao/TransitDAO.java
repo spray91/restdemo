@@ -2,18 +2,16 @@ package pl.spray.restdemo.transit.dao;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import pl.spray.restdemo.transit.model.TransitModel;
+import pl.spray.restdemo.transit.model.Transit;
 
 @Repository
-public interface TransitDAO extends JpaRepository<TransitModel, Long> {
+public interface TransitDAO extends JpaRepository<Transit, Long> {
 
-	List<TransitModel> findAllByDateBetween(LocalDate start, LocalDate end);
+	List<Transit> findAllByDateBetween(LocalDate start, LocalDate end);
 
-	List<TransitModel> findAllByDate(LocalDate date);
-
+	List<Transit> findAllByDate(LocalDate date);
 }

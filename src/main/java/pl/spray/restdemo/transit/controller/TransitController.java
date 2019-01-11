@@ -9,49 +9,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pl.spray.restdemo.transit.model.TransitModel;
+import pl.spray.restdemo.transit.model.DailyReport;
+import pl.spray.restdemo.transit.model.MonthlyReport;
+import pl.spray.restdemo.transit.model.Transit;
+import pl.spray.restdemo.transit.service.ReportingService;
 import pl.spray.restdemo.transit.service.TransitService;
 
 @Slf4j
 @RestController
+@RequestMapping(value = "/api")
 public class TransitController {
 
-	//TODO: modify get methods to use body instead of param and looks like addTransit (service produce response)
+	private TransitService transitService;
+	private ReportingService reportingService;
 
 	@Autowired
-	TransitService transitService;
-
-	@PostMapping(value = "/transits")
-	public ResponseEntity addTransit(@RequestBody TransitModel transitmodel) throws InterruptedException {
-		return transitService.addTransit(transitmodel);
+	public TransitController(TransitService transitService, ReportingService reportingService){
+		this.transitService = transitService;
+		this.reportingService = reportingService;
 	}
 
-	@GetMapping(value = "/reports/daily", produces = "application/json")
-	public ResponseEntity<?> getDailyReport(@RequestParam(value = "start_date") String startDate,
-			@RequestParam(value = "end_date") String endDate) throws JSONException {
-
-		return ResponseEntity.ok()
-				.body(transitService.getDailyRaport(LocalDate.parse(startDate), LocalDate.parse(endDate)).toString());
+	@PostMapping(value = "/add_transit")
+	public ResponseEntity addTransit(@RequestBody Transit transit) throws InterruptedException {
+		log.info(transit.toString());
+		return transitService.addTransit(transit);
 	}
 
-	@GetMapping(value = "/reports/currentmonth", produces = "application/json")
-	public ResponseEntity<?> getCurrentMonthReport() throws JSONException {
+	@GetMapping(value = "/reports/get_daily_details", produces = "application/json")
+	public ResponseEntity getDailyReport(@RequestBody DailyReport reportRequest) {
 
-		LocalDate firstDayOfMonth = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1);
-
-		return ResponseEntity.ok()
-				.body(transitService.getMonthlyReport(firstDayOfMonth, LocalDate.now().getDayOfMonth()).toString());
+		return reportingService.getDailyReport(reportRequest);
 	}
 
-	@GetMapping(value = "/reports/lastmonth", produces = "application/json")
-	public ResponseEntity<?> getLastMonthReport() throws JSONException {
+	@GetMapping(value = "/reports/get_monthly", produces = "application/json")
+	public ResponseEntity getMonthlyReport(@RequestBody MonthlyReport reportRequest) throws JSONException {
 
-		LocalDate firstDayOfLastMonth = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1).minusMonths(1);
-		int days = LocalDate.now().minusMonths(1).getMonth().length(LocalDate.now().isLeapYear());
-
-		return ResponseEntity.ok().body(transitService.getMonthlyReport(firstDayOfLastMonth, days).toString());
+		return reportingService.getMonthlyReport(reportRequest);
 	}
 }
